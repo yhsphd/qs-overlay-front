@@ -22,5 +22,6 @@ span {
   font-size: 128px;
   line-height: 141px;
   font-weight: 600;
+  letter-spacing: -0.05em;
 }
 </style>

@@ -71,7 +71,7 @@ const map = {
   <map-info class="map-info" v-bind="map"></map-info>
 
   <!--Reference Image; Will remove-->
-  <!--<img
+  <img
     src="@/assets/_ref_playing.png"
     style="
       position: absolute;
@@ -82,7 +82,7 @@ const map = {
       height: 100%;
       z-index: -100;
     "
-  />-->
+  />
 </template>
 
 <style scoped>
