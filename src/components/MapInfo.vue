@@ -5,7 +5,7 @@ const props = defineProps({
   code: String,
   order: Array,
   mapId: Number,
-  mapsetId: Number,
+  mapSetId: Number,
   artist: String,
   title: String,
   mapper: String,
@@ -20,7 +20,7 @@ const props = defineProps({
 });
 
 const bgUrl = computed(() => {
-  return `url(https://assets.ppy.sh/beatmaps/${props.mapsetId}/covers/raw.jpg)`;
+  return `url(https://assets.ppy.sh/beatmaps/${props.mapSetId}/covers/raw.jpg)`;
 });
 
 const len_str = computed(() => {

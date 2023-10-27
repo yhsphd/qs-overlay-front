@@ -61,11 +61,11 @@ const map = {
   <match-info class="match-info" match-code="W12" round="Quarterfinals"></match-info>
 
   <div class="leaderboard">
-    <RankBox v-for="(player, i) in players" :key="i" :status="player"></RankBox>
+    <rank-box v-for="(player, i) in players" :key="i" :status="player"></rank-box>
   </div>
 
   <div class="clients">
-    <ClientBox v-for="(client, i) in clients" :key="i" :index="i" :status="client"></ClientBox>
+    <client-box v-for="(client, i) in clients" :key="i" :index="i" :status="client"></client-box>
   </div>
 
   <map-info class="map-info" v-bind="map"></map-info>
