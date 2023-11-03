@@ -1,6 +1,8 @@
 <script setup>
-const title = "Michi o Yuke";
-const artist = "Ryokuoushoku Shakai";
+defineProps({
+  title: String,
+  artist: String,
+});
 </script>
 
 <template>
@@ -37,13 +39,13 @@ const artist = "Ryokuoushoku Shakai";
 .label {
   margin-top: 50px;
   font-size: 28px;
-  font-weight: 600;
 }
 
 .title {
   margin-top: 5px;
   font-size: 32px;
   font-weight: 600;
+  word-wrap: anywhere;
 }
 
 .artist {

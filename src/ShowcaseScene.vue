@@ -2,33 +2,14 @@
 import MapInfo from "@/components/MapInfo.vue";
 import LogoAndFullTitle from "@/components/LogoAndFullTitle.vue";
 import DisplayBox from "@/components/Showcase/DisplayBox.vue";
-
-const map = {
-  code: "NM3",
-  order: [6, 8],
-  mapId: 4065519,
-  mapsetId: 1961630,
-  artist: "Ryokuoushoku Shakai",
-  title: "Michi o Yuke",
-  mapper: "mnyui",
-  difficulty: "Forever",
-  cs: 4,
-  ar: 9.6,
-  od: 9,
-  hp: 6,
-  sr: 6.0,
-  len: 210,
-  bpm: [150, 150, 150],
-};
-
-const streamTitle = "Quarterfinals Showcase";
+import { state } from "@/socket";
 </script>
 
 <template>
   <logo-and-full-title class="logo"></logo-and-full-title>
-  <div class="stream-title">{{ streamTitle.toUpperCase() }}</div>
+  <div class="stream-title">{{ state.overlayData.stream_title }}</div>
 
-  <map-info class="map-info" v-bind="map"></map-info>
+  <map-info class="map-info" :map="state.overlayData.now_playing.osu" :type="state.overlayData.type"></map-info>
 
   <display-box class="display-box"></display-box>
 

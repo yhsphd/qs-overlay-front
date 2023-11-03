@@ -1,75 +1,88 @@
 <script setup>
+import "@/../node_modules/vue3-marquee-slider/dist/style.css";
+import { secondsToMMSS } from "@/quartet";
 import { computed } from "vue";
+import OptionalMarquee from "@/components/OptionalMarquee.vue";
 
 const props = defineProps({
-  code: String,
+  type: String,
+  map: Object,
   order: Array,
-  mapId: Number,
-  mapSetId: Number,
-  artist: String,
-  title: String,
-  mapper: String,
-  difficulty: String,
-  cs: Number,
-  ar: Number,
-  od: Number,
-  hp: Number,
-  sr: Number,
-  len: Number,
-  bpm: Array,
 });
 
-const bgUrl = computed(() => {
-  return `url(https://assets.ppy.sh/beatmaps/${props.mapSetId}/covers/raw.jpg)`;
-});
-
-const len_str = computed(() => {
-  return new Date(props.len * 1000).toISOString().slice(14, 19);
+const backgroundUrl = computed(() => {
+  if (props.map.background) {
+    return `url("${props.map.background}")`;
+  } else {
+    return "unset";
+  }
 });
 </script>
 
 <template>
   <div class="master">
-    <div class="title" :style="{ backgroundImage: bgUrl }">
+    <div class="title" :style="{ backgroundImage: backgroundUrl }">
       <div class="background-lighten">
-        <div class="code">{{ code }}</div>
-        <div class="order">PICK {{ order[0] }} / {{ order[1] }}</div>
+        <div class="code" v-if="map.code">{{ map.code }}</div>
+        <div class="order" v-if="false">
+          {{ type === "showcase" ? "MAP" : "PICK" }} {{ order[0] }} / {{ order[1] }}
+        </div>
         <div style="flex-grow: 1"></div>
-        <div class="key">{{ artist.toUpperCase() }}</div>
-        <div class="value">{{ title.toUpperCase() }}</div>
+        <div class="key">{{ map.artist.toUpperCase() }}</div>
+        <div class="value">
+          <optional-marquee
+            :enabled="map.title.length > 12"
+            :speed="20000"
+            :text="map.title.toUpperCase()"
+          ></optional-marquee>
+        </div>
       </div>
     </div>
     <div class="mapper">
       <div class="key">MAPPER</div>
-      <div class="value">{{ mapper.toUpperCase() }}</div>
+      <div class="value">
+        <optional-marquee
+          :enabled="map.mapper.length > 12"
+          :speed="20000"
+          :text="map.mapper.toUpperCase()"
+        >
+        </optional-marquee>
+      </div>
     </div>
     <div class="diff">
       <div class="key">DIFFICULTY</div>
-      <div class="value">{{ difficulty.toUpperCase() }}</div>
+      <div class="value">
+        <optional-marquee
+          :enabled="map.difficulty.length > 12"
+          :speed="20000"
+          :text="map.difficulty.toUpperCase()"
+        >
+        </optional-marquee>
+      </div>
     </div>
     <div class="metadata">
       <div class="key">CS</div>
-      <div class="value">{{ cs.toFixed(1) }}</div>
+      <div class="value">{{ map.stats.modified.cs.toFixed(1) }}</div>
     </div>
     <div class="metadata">
       <div class="key">AR</div>
-      <div class="value">{{ ar.toFixed(1) }}</div>
+      <div class="value">{{ map.stats.modified.ar.toFixed(1) }}</div>
     </div>
     <div class="metadata">
       <div class="key">OD</div>
-      <div class="value">{{ od.toFixed(1) }}</div>
+      <div class="value">{{ map.stats.modified.od.toFixed(1) }}</div>
     </div>
     <div class="metadata">
       <div class="key">SR</div>
-      <div class="value">{{ sr.toFixed(1) }}</div>
+      <div class="value">{{ map.stats.modified.sr.toFixed(1) }}</div>
     </div>
     <div class="metadata">
       <div class="key">LENGTH</div>
-      <div class="value">{{ len_str }}</div>
+      <div class="value">{{ secondsToMMSS(map.stats.modified.length / 1000) }}</div>
     </div>
     <div class="metadata">
       <div class="key">BPM</div>
-      <div class="value">{{ bpm[2] }}</div>
+      <div class="value">{{ map.stats.modified.bpm }}</div>
     </div>
     <div style="opacity: 0"></div>
   </div>
@@ -89,6 +102,8 @@ const len_str = computed(() => {
 
 .master > * {
   margin: 5px 5px 0 5px;
+  width: calc(100% - 20px);
+  max-width: calc(100% - 20px);
   border: var(--border);
   border-radius: 16px;
   flex-basis: 100%;
@@ -150,6 +165,9 @@ const len_str = computed(() => {
   font-size: 48px;
   font-weight: 600;
   letter-spacing: -0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .metadata > .value {
