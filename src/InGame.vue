@@ -4,74 +4,109 @@ import MatchInfo from "@/components/MatchInfo.vue";
 import RankBox from "@/components/Playing/RankBox.vue";
 import ClientBox from "@/components/Playing/ClientBox.vue";
 import MapInfo from "@/components/MapInfo.vue";
+import { state } from "@/socket";
+import { computed, ref, watch } from "vue";
+import ChatElement from "@/components/Playing/ChatElement.vue";
 
-const players = [
-  {
-    rank: 1,
-    uid: 6665667,
-    nick: "yhsphd",
-    score: 1727727,
-  },
-  {
-    rank: 2,
-    uid: 6537257,
-    nick: "KitaShia",
-    score: 727726,
-  },
-  {
-    rank: 3,
-    uid: 11129034,
-    nick: "_sPekTrE",
-    score: 727725,
-  },
-  {
-    rank: 4,
-    uid: 9052194,
-    nick: "Allegrissimo",
-    score: 727724,
-  },
-];
-const clients = [
-  { rank: 1, points: 7 },
-  { rank: 2, points: 4 },
-  { rank: 3, points: 3 },
-  { rank: 4, points: 1 },
-];
-const map = {
-  code: "NM3",
-  order: [6, 8],
-  mapId: 4065519,
-  mapsetId: 1961630,
-  artist: "Ryokuoushoku Shakai",
-  title: "Michi o Yuke",
-  mapper: "mnyui",
-  difficulty: "Forever",
-  cs: 4,
-  ar: 9.6,
-  od: 9,
-  hp: 6,
-  sr: 6.0,
-  len: 210,
-  bpm: [150, 150, 150],
-};
+const scoreRank = computed(() => {
+  const clients = state.overlayData.lobby.players;
+  const scores = Array.from(
+    new Set(
+      Object.keys(clients).map(function (key) {
+        return clients[key].score;
+      })
+    )
+  );
+  let order = [0, 1, 2, 3];
+
+  for (let i = 1; i < scores.length; i++) {
+    let key = order[i];
+    let j;
+    for (j = i - 1; j >= 0 && scores[order[j]] > scores[key]; j--) {
+      order[j + 1] = order[j];
+    }
+    order[j + 1] = key;
+  }
+
+  let rank = [];
+
+  for (let i = 0; i < order.length; i++) {
+    rank.push(order.length - 1 - order.indexOf(i));
+  }
+
+  return rank;
+});
+
+const tourneyState = computed(() => {
+  try {
+    return state.overlayData.progress.state;
+  } catch (e) {
+    return -1;
+  }
+});
+const showChat = ref();
+
+watch(tourneyState, (newState, oldState) => {
+  if (newState === 1) {
+    // idle
+    showChat.value = true;
+  } else if (newState === 3) {
+    // playing
+    showChat.value = false;
+  } else if (oldState === 3 && newState === 4) {
+    // playing -> result
+    setTimeout(() => {
+      showChat.value = true;
+    }, 10000);
+  }
+});
 </script>
 
 <template>
   <logo-and-acronym class="logo"></logo-and-acronym>
-  <match-info class="match-info" match-code="W12" round="Quarterfinals"></match-info>
+  <match-info
+    class="match-info"
+    :match-code="state.overlayData.match_code"
+    :round="state.overlayData.bracket"
+  ></match-info>
 
-  <div class="leaderboard">
-    <rank-box v-for="(player, i) in players" :key="i" :status="player"></rank-box>
+  <div class="leaderboard" v-if="!showChat">
+    <rank-box
+      v-for="(player, i) in state.overlayData.lobby.players"
+      :key="i"
+      v-bind="player"
+      :index="i"
+      :rank="scoreRank[i] + 1"
+    ></rank-box>
+  </div>
+
+  <div class="chat" v-if="showChat">
+    <chat-element
+      v-for="(chat, i) in state.overlayData.chat.slice(-10).reverse()"
+      :key="i"
+      :data="chat"
+      :players="state.overlayData.sheets.players"
+    ></chat-element>
   </div>
 
   <div class="clients">
-    <client-box v-for="(client, i) in clients" :key="i" :index="i" :status="client"></client-box>
+    <client-box
+      v-for="(_, i) in state.overlayData.sheets.points.sum"
+      :key="i"
+      :index="i"
+      :rank="state.overlayData.sheets.points.rank[i]"
+      :points="state.overlayData.sheets.points.sum[i]"
+    ></client-box>
   </div>
 
-  <map-info class="map-info" v-bind="map"></map-info>
+  <map-info
+    class="map-info"
+    :map="state.overlayData.now_playing.osu"
+    :type="state.overlayData.type"
+  ></map-info>
 
   <!--Reference Image; Will remove-->
-  <img
+  <!--<img
     src="@/assets/_ref_playing.png"
     style="
       position: absolute;
@@ -82,7 +117,7 @@ const map = {
       height: 100%;
       z-index: -100;
     "
-  />
+  />-->
 </template>
 
 <style scoped>
@@ -101,6 +136,17 @@ const map = {
 .leaderboard {
   position: absolute;
   top: 250px;
+}
+
+.chat {
+  position: absolute;
+  top: 250px;
+  left: 20px;
+  width: 410px;
+  height: 635px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .clients {

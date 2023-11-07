@@ -31,9 +31,10 @@ const backgroundUrl = computed(() => {
         <div class="key">{{ map.artist.toUpperCase() }}</div>
         <div class="value">
           <optional-marquee
-            :enabled="map.title.length > 12"
+            :enabled="map.title.length > 11"
             :speed="20000"
             :text="map.title.toUpperCase()"
+            :marquee_id="'_om_mapinfo_maptitle'"
           ></optional-marquee>
         </div>
       </div>
@@ -42,9 +43,10 @@ const backgroundUrl = computed(() => {
       <div class="key">MAPPER</div>
       <div class="value">
         <optional-marquee
-          :enabled="map.mapper.length > 12"
+          :enabled="map.mapper.length > 11"
           :speed="20000"
           :text="map.mapper.toUpperCase()"
+          :marquee_id="'_om_mapinfo_mapper'"
         >
         </optional-marquee>
       </div>
@@ -53,9 +55,10 @@ const backgroundUrl = computed(() => {
       <div class="key">DIFFICULTY</div>
       <div class="value">
         <optional-marquee
-          :enabled="map.difficulty.length > 12"
+          :enabled="map.difficulty.length > 11"
           :speed="20000"
           :text="map.difficulty.toUpperCase()"
+          :marquee_id="'_om_mapinfo_diff'"
         >
         </optional-marquee>
       </div>
@@ -82,7 +85,7 @@ const backgroundUrl = computed(() => {
     </div>
     <div class="metadata">
       <div class="key">BPM</div>
-      <div class="value">{{ map.stats.modified.bpm }}</div>
+      <div class="value">{{ Math.round(map.stats.modified.bpm) }}</div>
     </div>
     <div style="opacity: 0"></div>
   </div>
@@ -167,7 +170,6 @@ const backgroundUrl = computed(() => {
   letter-spacing: -0.1em;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .metadata > .value {

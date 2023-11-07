@@ -2,30 +2,26 @@
 import { computed } from "vue";
 
 const props = defineProps({
-  status: {
-    type: Object,
-    default() {
-      return {
-        rank: 0,
-        uid: 1,
-        nick: "peppy",
-        score: 0,
-      };
-    },
-  },
+  id: Number,
+  nick: String,
+  score: Number,
+  combo: Number,
+  acc: Number,
+  index: Number,
+  rank: Number,
 });
 
 const pfp_link = computed(() => {
-  return `https://a.ppy.sh/${props.status.uid}`;
+  return `https://a.ppy.sh/${props.id ? props.id : -1}`;
 });
 </script>
 
 <template>
-  <div class="master">
-    <div class="rank">{{ status.rank }}</div>
+  <div class="master" :style="{ top: (rank - 1 - index) * 165 + 'px' }">
+    <div class="rank">{{ index + 1 }}</div>
     <img class="pfp" :src="pfp_link" />
-    <div class="nick">{{ status.nick.toUpperCase() }}</div>
-    <div class="score">{{ status.score.toLocaleString() }}</div>
+    <div class="nick">{{ nick.toUpperCase() }}</div>
+    <div class="score">{{ score.toLocaleString() }}</div>
   </div>
 </template>
 
@@ -37,6 +33,7 @@ const pfp_link = computed(() => {
   height: 130px;
   border-radius: 24px;
   border: var(--border);
+  transition: top 500ms cubic-bezier(0, 1.4, 0.6, 1);
 }
 
 .master > * {

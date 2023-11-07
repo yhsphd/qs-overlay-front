@@ -9,7 +9,11 @@ import { state } from "@/socket";
   <logo-and-full-title class="logo"></logo-and-full-title>
   <div class="stream-title">{{ state.overlayData.stream_title }}</div>
 
-  <map-info class="map-info" :map="state.overlayData.now_playing.osu" :type="state.overlayData.type"></map-info>
+  <map-info
+    class="map-info"
+    :map="state.overlayData.now_playing.osu"
+    :type="state.overlayData.type"
+  ></map-info>
 
   <display-box class="display-box"></display-box>
 

@@ -3,12 +3,8 @@ import { computed, ref } from "vue";
 
 defineProps({
   index: Number,
-  status: {
-    type: Object,
-    default() {
-      return { rank: 0, points: 0 };
-    },
-  },
+  rank: Number,
+  points: Number,
 });
 
 const targetElement = ref(null);
@@ -43,9 +39,9 @@ const positionInfo = computed(() => {
       </div>
     </div>
     <div class="horizontal-box status">
-      <div class="rank">#{{ status.rank }}</div>
+      <div class="rank">#{{ rank }}</div>
       <div style="flex-grow: 1"></div>
-      <div class="points">{{ status.points }} POINTS</div>
+      <div class="points">{{ points }} POINTS</div>
     </div>
   </div>
 </template>
