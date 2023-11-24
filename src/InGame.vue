@@ -46,6 +46,14 @@ const tourneyState = computed(() => {
 });
 const showChat = ref();
 
+const order = computed(() => {
+  if (state.overlayData.type !== "match") {
+    return [];
+  }
+
+  return state.overlayData.sheets.order;
+});
+
 watch(tourneyState, (newState, oldState) => {
   if (newState === 1) {
     // idle
@@ -103,6 +111,7 @@ watch(tourneyState, (newState, oldState) => {
     class="map-info"
     :map="state.overlayData.now_playing.osu"
     :type="state.overlayData.type"
+    :order="order"
   ></map-info>
 
   <!--Reference Image; Will remove-->

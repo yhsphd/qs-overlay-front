@@ -24,7 +24,7 @@ const backgroundUrl = computed(() => {
     <div class="title" :style="{ backgroundImage: backgroundUrl }">
       <div class="background-lighten">
         <div class="code" v-if="map.code">{{ map.code }}</div>
-        <div class="order" v-if="false">
+        <div class="order" v-if="order.length !== 0">
           {{ type === "showcase" ? "MAP" : "PICK" }} {{ order[0] }} / {{ order[1] }}
         </div>
         <div style="flex-grow: 1"></div>

@@ -3,6 +3,41 @@ import MapInfo from "@/components/MapInfo.vue";
 import LogoAndFullTitle from "@/components/LogoAndFullTitle.vue";
 import DisplayBox from "@/components/Showcase/DisplayBox.vue";
 import { state } from "@/socket";
+import { computed } from "vue";
+
+const order = computed(() => {
+  if (state.overlayData.type !== "showcase") {
+    return [];
+  }
+
+  const mappool = state.overlayData.mappool;
+  const currentCode = state.overlayData.now_playing.osu.code;
+  const modsOrder = ["NM", "HD", "HR", "FM", "SM", "DT", "TB"];
+
+  let count = 0;
+
+  for (let i = 0; i < modsOrder.length; i++) {
+    if (mappool.hasOwnProperty(modsOrder[i])) {
+      count++;
+
+      if (currentCode === modsOrder[i]) {
+        return [count, mappool.length];
+      }
+    }
+
+    let j = 1;
+    while (mappool.hasOwnProperty(modsOrder[i] + j)) {
+      count++;
+      i++;
+
+      if (currentCode === modsOrder[i] + j) {
+        return [count, mappool.length];
+      }
+    }
+  }
+
+  return [];
+});
 </script>
 
 <template>
@@ -13,6 +48,7 @@ import { state } from "@/socket";
     class="map-info"
     :map="state.overlayData.now_playing.osu"
     :type="state.overlayData.type"
+    :order="order"
   ></map-info>
 
   <display-box class="display-box"></display-box>
